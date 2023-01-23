@@ -12,10 +12,10 @@
   <img src="{{ url_for('static', filename='dog.png') }}" class="icon" />
   <h3>Name my pet</h3>
   <form action="/" method="post">
-    <input type="text" name="animal" placeholder="Enter an animal" required />
-    <input type="submit" value="Generate names" />
+    <textarea rows="10" cols="100" name="code" placeholder="Enter C++ code" required></textarea>
+    <input type="submit" value="Generate python" />
   </form>
   {% if result %}
-  <div class="result">{{ result }}</div>
+  <textarea rows="10" cols="100">{{ result }}</textarea>
   {% endif %}
 </body>
