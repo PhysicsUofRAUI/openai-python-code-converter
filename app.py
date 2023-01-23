@@ -11,9 +11,11 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 def index():
     if request.method == "POST":
         code = request.form["code"]
+        lang = request.form["lang"]
+        lang_conv = request.form["lang_conv"]
         response = openai.Completion.create(
         model="code-davinci-002",
-        prompt=generate_prompt(code),
+        prompt=generate_prompt(lang, code, lang_conv),
         temperature=0.1,
         max_tokens=100,
         top_p=1,
@@ -27,13 +29,13 @@ def index():
     return render_template("index.html", result=result)
 
 
-def generate_prompt(code):
+def generate_prompt(lang, code, lang_conv):
     try:
         return """##### Translate this function from C++ into Python
 
-### C++
+### {}
     {}
-### Python
-""".format(code)
+### {}
+""".format(lang, code, lang_conv)
     except KeyError:
         return "Invalid C++ code"
