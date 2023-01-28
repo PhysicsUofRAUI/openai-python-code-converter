@@ -34,7 +34,7 @@ def generate_prompt(lang, code, lang_conv):
         return """##### Translate this function from C++ into Python
 
 ### {}
-    {}
+{}
 ### {}
 """.format(lang, code, lang_conv)
     except KeyError:
