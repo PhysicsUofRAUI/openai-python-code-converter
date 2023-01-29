@@ -86,6 +86,24 @@ def code_rewriter():
     result = request.args.get("result")
     return render_template("code_rewriter.html", result=result)
 
+@app.route("/arduino_code_writer", methods=("GET", "POST"))
+def arduino_code_writer():
+    if request.method == "POST":
+        code_description = request.form["code_description"]
+        response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=generate_arduino_code_prompt(code_description),
+        temperature=0.2,
+        max_tokens=512,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+        )
+        return redirect(url_for("arduino_code_writer", result=response.choices[0].text))
+
+    result = request.args.get("result")
+    return render_template("arduino_code_writer.html", result=result)
+
 def generate_prompt(lang, code, lang_conv):
     try:
         return """##### Translate this function from C++ into Python
@@ -114,3 +132,7 @@ def generate_general_prompt(code):
 
     except KeyError:
         return "Invalid code"
+
+def generate_arduino_code_prompt(code_description):
+    return """/* Write the Arduino Code to:
+{} */""".format(code_description)

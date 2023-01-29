@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<head>
+  <title>OpenAI Quickstart</title>
+  <link
+    rel="shortcut icon"
+    href="{{ url_for('static', filename='dog.png') }}"
+  />
+  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}" />
+</head>
+<body>
+  <img src="{{ url_for('static', filename='dog.png') }}" class="icon" />
+  <h3>Write Arduino Code</h3>
+  <form action="/arduino_code_writer" method="post">
+    <textarea rows="25" cols="100" name="code_description" placeholder="Write the Arduino Code to" required></textarea>
+    <input type="submit" value="Write Arduino Code" />
+  </form>
+  {% if result %}
+  <textarea rows="10" cols="100">{{ result }}</textarea>
+  {% endif %}
+</body>
