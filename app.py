@@ -104,6 +104,25 @@ def arduino_code_writer():
     result = request.args.get("result")
     return render_template("arduino_code_writer.html", result=result)
 
+@app.route("/problematic_code", methods=("GET", "POST"))
+def problematic_code():
+    if request.method == "POST":
+        code = request.form["code"]
+        behaviour = request.form["behaviour"]
+        response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=generate_prompt_code_problem(code, behaviour),
+        temperature=0.2,
+        max_tokens=512,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+        )
+        return redirect(url_for("problematic_code", result=response.choices[0].text))
+
+    result = request.args.get("result")
+    return render_template("problematic_code.html", result=result)
+
 def generate_prompt(lang, code, lang_conv):
     try:
         return """##### Translate this function from C++ into Python
@@ -136,3 +155,8 @@ def generate_general_prompt(code):
 def generate_arduino_code_prompt(code_description):
     return """/* Write the Arduino Code to:
 {} */""".format(code_description)
+
+def generate_prompt_code_problem(code, behaviour):
+    return """Why is the following code not working?
+{}
+It should: {}""".format(code, behaviour)
