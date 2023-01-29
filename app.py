@@ -55,7 +55,7 @@ def code_explainer():
         code = request.form["code"]
         response = openai.Completion.create(
         model="code-davinci-002",
-        prompt=generate_function_explanation_prompt(code),
+        prompt=generate_general_prompt(code),
         temperature=0,
         max_tokens=256,
         top_p=1,
@@ -67,6 +67,24 @@ def code_explainer():
 
     result = request.args.get("result")
     return render_template("code_explainer.html", result=result)
+
+@app.route("/code_rewriter", methods=("GET", "POST"))
+def code_rewriter():
+    if request.method == "POST":
+        code = request.form["code"]
+        response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=generate_general_prompt(code),
+        temperature=0.2,
+        max_tokens=256,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+        )
+        return redirect(url_for("code_rewriter", result=response.choices[0].text))
+
+    result = request.args.get("result")
+    return render_template("code_rewriter.html", result=result)
 
 def generate_prompt(lang, code, lang_conv):
     try:
@@ -90,7 +108,7 @@ def generate_unit_test(lang, code):
     except KeyError:
         return "Invalid code"
 
-def generate_function_explanation_prompt(code):
+def generate_general_prompt(code):
     try:
         return """{}""".format(code)
 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<head>
+  <title>OpenAI Quickstart</title>
+  <link
+    rel="shortcut icon"
+    href="{{ url_for('static', filename='dog.png') }}"
+  />
+  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}" />
+</head>
+<body>
+  <img src="{{ url_for('static', filename='dog.png') }}" class="icon" />
+  <h3>Rewrite Code</h3>
+  <h4>Example</h4>
+  <h5>Input</h5>
+  <pre># Simplify this function
+def BadFunction(arr, x, y):
+    """return the number, x or y, that occurs most in the array arr"""
+    count_y = 0
+    count_x = 0
+    for i in arr :
+        if i == x :
+            if y == i :
+                count_x = count_x + 1
+            count_x = count_x + 1
+        if i == y :
+            count_y = count_y + 1
+
+    if count_y > count_x :
+        return count_y
+    else :
+        return count_x</pre>
+  <h5>Output</h5>
+  <pre># Simplified
+def SimplifiedFunction(arr, x, y):
+    """return the number, x or y, that occurs most in the array arr"""
+    count_x = arr.count(x)
+    count_y = arr.count(y)
+    return max(count_x, count_y)</pre>
+  <form action="/code_rewriter" method="post">
+    <textarea rows="25" cols="100" name="code" placeholder="Enter Selected Code" required></textarea>
+    <input type="submit" value="Rewrite The Code" />
+  </form>
+  {% if result %}
+  <textarea rows="10" cols="100">{{ result }}</textarea>
+  {% endif %}
+</body>
