@@ -29,6 +29,26 @@ def index():
     return render_template("index.html", result=result)
 
 
+@app.route("/test_writer", methods=("GET", "POST"))
+def test_writer():
+    if request.method == "POST":
+        code = request.form["code"]
+        lang = request.form["lang"]
+        response = openai.Completion.create(
+        model="code-davinci-002",
+        prompt=generate_unit_test(lang, code),
+        temperature=0,
+        max_tokens=256,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0,
+        stop=["###"]
+        )
+        return redirect(url_for("test_writer", result=response.choices[0].text))
+
+    result = request.args.get("result")
+    return render_template("test_writer.html", result=result)
+
 def generate_prompt(lang, code, lang_conv):
     try:
         return """##### Translate this function from C++ into Python
@@ -39,3 +59,14 @@ def generate_prompt(lang, code, lang_conv):
 """.format(lang, code, lang_conv)
     except KeyError:
         return "Invalid C++ code"
+
+
+def generate_unit_test(lang, code):
+    try:
+        return """# {}
+{}
+
+# Unit test""".format(lang, code)
+
+    except KeyError:
+        return "Invalid code"
